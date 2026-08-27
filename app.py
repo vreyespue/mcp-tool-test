@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify
+
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 

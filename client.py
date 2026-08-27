@@ -1,7 +1,8 @@
-import requests
 import json
 import os
-import google.genai as genai
+
+import requests
+from google import genai
 from google.genai import types
 
 # The URL of the running MCP server
