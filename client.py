@@ -1,29 +1,25 @@
 import requests
 import json
 import os
-from dotenv import load_dotenv
 import google.genai as genai
 from google.genai import types
 
 # The URL of the running MCP server
 SERVER_URL = "http://127.0.0.1:5003/mcp"
-GEMINI_FLASH_MODEL = "models/gemini-flash-latest"
+GEMINI_FLASH_MODEL = "gemini-3.7-flash"
 
-# Configure Gemini API
-load_dotenv()
-if not os.path.exists(".env"):
-    print("WARNING: .env file not found in the working directory.")
-try:
-    gemini_api_key = os.environ["GEMINI_API_KEY"]
-except KeyError:
-    print("ERROR: GEMINI_API_KEY environment variable not set.")
-    print("Please set the GEMINI_API_KEY environment variable before running.")
+# Configure Gemini through Vertex AI using Application Default Credentials (ADC).
+google_cloud_project = os.getenv("GOOGLE_CLOUD_PROJECT")
+google_cloud_location = os.getenv("GOOGLE_CLOUD_LOCATION", "global")
+if not google_cloud_project:
+    print("ERROR: GOOGLE_CLOUD_PROJECT environment variable not set.")
+    print("Set it to the Google Cloud project that has Vertex AI enabled.")
     exit(1)
-if not gemini_api_key.strip():
-    print("ERROR: GEMINI_API_KEY is empty.")
-    print("Please set a non-empty GEMINI_API_KEY before running.")
-    exit(1)
-client = genai.Client(api_key=gemini_api_key)
+client = genai.Client(
+    vertexai=True,
+    project=google_cloud_project,
+    location=google_cloud_location,
+)
 
 # Define the tool for Gemini to understand
 # This mirrors the 'get_current_time' functionality we expect from our MCP server
@@ -137,6 +133,7 @@ def main():
     Runs the full end-to-end workflow using Gemini Flash.
     """
     print("--- START OF WORKFLOW (Gemini Flash) ---")
+    print(f"INFO: Using Gemini model: {GEMINI_FLASH_MODEL}")
     user_prompt = "What time is it in UTC?"  # Example user query
 
     # 1. The application sends the user prompt to Gemini to get an intent

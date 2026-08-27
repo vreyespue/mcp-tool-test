@@ -6,10 +6,26 @@ The server provides a single endpoint that an AI application can call to get the
 
 ## Setup
 
-1.  Make sure you have Python 3 installed.
-2.  Install the necessary dependencies from `requirements.txt`:
+1.  Make sure you have Python 3 and the Google Cloud CLI installed.
+2.  Authenticate with Application Default Credentials using Vertex AI:
     ```bash
-    pip install -r requirements.txt
+    gcloud auth application-default login
+    gcloud auth application-default set-quota-project YOUR_PROJECT_ID
+    gcloud services enable aiplatform.googleapis.com --project YOUR_PROJECT_ID
+    ```
+3.  Set the project for the client:
+    ```bash
+    export GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID
+    export GOOGLE_CLOUD_LOCATION=global
+    ```
+4.  Create and activate a virtual environment:
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+5.  Install the necessary dependencies from `requirements.txt`:
+    ```bash
+    python -m pip install -r requirements.txt
     ```
 
 ## Usage
