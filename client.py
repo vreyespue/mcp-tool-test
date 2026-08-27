@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 import requests
 from google import genai
@@ -15,7 +16,7 @@ google_cloud_location = os.getenv("GOOGLE_CLOUD_LOCATION", "global")
 if not google_cloud_project:
     print("ERROR: GOOGLE_CLOUD_PROJECT environment variable not set.")
     print("Set it to the Google Cloud project that has Vertex AI enabled.")
-    exit(1)
+    sys.exit(1)
 client = genai.Client(
     vertexai=True,
     project=google_cloud_project,
@@ -39,7 +40,7 @@ def call_mcp_tool(tool_name, parameters):
     """
     Calls the specified MCP tool with the given parameters.
     """
-    print(f"\n--- MCP TOOL CALL ---")
+    print("\n--- MCP TOOL CALL ---")
     print(f"INFO: Application is calling the '{tool_name}' tool via MCP.")
 
     mcp_request = {"tool_name": tool_name, "parameters": parameters}
@@ -62,7 +63,7 @@ def call_gemini_llm(user_prompt, tool_response=None):
     Interacts with the Gemini Flash model.
     Handles both initial intent detection and final response generation.
     """
-    print(f"\n--- GEMINI LLM INTERACTION ---")
+    print("\n--- GEMINI LLM INTERACTION ---")
     chat_history = []
     # The chat history is crucial for Gemini to understand context and previous tool outputs.
     # For a simple single-turn interaction, we can re-initialize or manage it.
@@ -123,7 +124,7 @@ def call_gemini_llm(user_prompt, tool_response=None):
                     }
                 }
             elif part.text:
-                print(f"INFO: Gemini responded with text.")
+                print("INFO: Gemini responded with text.")
                 return part.text
 
     return "Gemini did not provide a clear response (tool call or text)."
